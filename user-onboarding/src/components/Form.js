@@ -50,7 +50,14 @@ const FormikForm = withFormik({
             role: role || '',
             terms: terms || false
         };
-    }
+    },
+    validationSchema: Yup.object().shape({
+        name: Yup.string().required('You must have a name, no?'),
+        email: Yup.string().required('Most people these days have emails, what is yours?'),
+        password: Yup.string().required('Passwords keep you safe, so please enter one'),
+        role: Yup.string().oneOf(['frontend', 'backend', 'fullstack', 'other'])
+        .required('Please select a role')
+    })
 })(OnboardForm);
 
 export default FormikForm;
