@@ -3,14 +3,23 @@ import axios from 'axios';
 import { withFormik, Form, Field, setNestedObjectValues } from 'formik';
 import * as Yup from 'yup';
 
-const Form = ({}) => {
+const OnboardForm = ({values, touched, errors}) => {
 
     return(
         <div className='onboard-form'>
             <Form>
                 <Field type='text' name='name' placeholder='Name'/>
+                {touched.name && errors.name && (
+                    <p className='error'>{errors.name}</p>
+                )}
                 <Field type='email' name='email' placeholder='Email'/>
+                {touched.email && errors.email && (
+                    <p className='error'>{errors.email}</p>
+                )}
                 <Field type='password' name='password' placeholder='Password' />
+                {touched.password && errors.password && (
+                    <p className='error'>{errors.password}</p>
+                )}
                 <Field component='select' className='role-select' name='role'>
                     <option>Choose your role</option>
                     <option value='frontend'>Frontend</option>
@@ -18,6 +27,9 @@ const Form = ({}) => {
                     <option value='fullstack'>Fullstack</option>
                     <option value='other'>Other</option>
                 </Field>
+                {touched.role && errors.role && (
+                    <p className='error'>{errors.role}</p>
+                )}
                 <label className='checkbox-container'>
                     {' '}
                     Terms of Service
@@ -39,6 +51,6 @@ const FormikForm = withFormik({
             terms: terms || false
         };
     }
-})(Form);
+})(OnboardForm);
 
 export default FormikForm;
