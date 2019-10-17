@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { withFormik, Form, Field, setNestedObjectValues } from 'formik';
+import { withFormik, Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-const OnboardForm = ({values, touched, errors}) => {
-
+const OnboardForm = ({values, touched, errors, status }) => {
+    const [users, setUsers] = useState([])
+    useEffect(() => {
+        status && setUsers(users => [...users, status])
+    },[status])
     return(
         <div className='onboard-form'>
             <Form>
@@ -37,7 +40,14 @@ const OnboardForm = ({values, touched, errors}) => {
                 </label>
                 <button type='submit'>Submit</button>
             </Form>
-
+            {users.map(user => (
+                <ul key={user.id}>
+                    <li>Name: {user.name}</li>
+                    <li>Email: {user.email}</li>
+                    <li>Password: You wish!</li>
+                    <li>Role: {user.role}</li>
+                </ul>
+            ))}
         </div>
     );
 };
@@ -57,7 +67,13 @@ const FormikForm = withFormik({
         password: Yup.string().required('Passwords keep you safe, so please enter one'),
         role: Yup.string().oneOf(['frontend', 'backend', 'fullstack', 'other'])
         .required('Please select a role')
-    })
+    }),
+    handleSubmit(values, {setStatus, resetForm}) {
+        resetForm();
+        axios.post('https://reqres.in/api/users/', values)
+        .then(response => {setStatus(response.data); })
+        .catch(error => console.log(error.response));
+    }
 })(OnboardForm);
 
 export default FormikForm;
